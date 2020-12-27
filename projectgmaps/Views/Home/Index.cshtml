@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="row">
+    
+    <style>
+        #map {
+            height: 1400px;
+            width:1400px;
+        }
+
+    </style>
+</div>
+<div class="row">
+    <div id="map"></div>
+    @*/ Create the script tag, set the appropriate attributes
+        *@
+    <script>
+
+    var script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap';
+    script.defer = true;
+
+        function initMap() {
+
+            const uluru = { lat: 6.908541251524559, lng: 79.93158183305528  };
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 4,
+                center: uluru,
+            });
+
+
+           
+
+                const marker = new google.maps.Marker({
+                    position: uluru,
+                    map,
+                    title: "Colombo",
+                });
+                const contentString =
+                    '<div id="content">' +
+                    '<div id="siteNotice">' +
+                    "</div>" +
+                    '<h1 id="firstHeading" class="firstHeading">Colombo</h1>' +
+                    '<div id="bodyContent">' +
+                    "<p><b>Colombo</b>,Test description</p>" +
+                    "</div>" +
+                    "</div>";
+                const infowindow = new google.maps.InfoWindow({
+                    content: contentString,
+                });
+              
+                marker.addListener("click", () => {
+                    infowindow.open(map, marker);
+                });
+                //marker.addListener("click", () => {
+                //    infowindow.open(map, marker);
+                //});
+        //});
+
+            
+        }
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVamh7-n7dttovSZq4X2asx-IHA64oyX0&callback=initMap"
+            async defer></script>
+</div>
+@*<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>*@
