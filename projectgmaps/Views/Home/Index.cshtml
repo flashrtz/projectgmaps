@@ -17,7 +17,7 @@
     <div id="map"></div>
     @*/ Create the script tag, set the appropriate attributes
         *@
-    <script>
+<script>
 
     var script = document.createElement('script');
     script.src = 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap';
@@ -25,44 +25,130 @@
 
         function initMap() {
 
-            const uluru = { lat: 6.908541251524559, lng: 79.93158183305528  };
-            const map = new google.maps.Map(document.getElementById("map"), {
+            map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 4,
-                center: uluru,
+                center: { lat: 6.90854, lng: 79.9316},
             });
 
+            $.ajax({
+                    type: "GET",
+                    dataType: "Json",
+                    url: '@Url.Action("GetAllLocation", "Registration")' ,
+                    async: false,
+                success: function (data) {
+                    console.log("data" + JSON.stringify(data));
+                        var marker = [];
+                        var infowindow = [];
+                        var contentString = [];
 
-           
+                        for (var i = 0; i < data.length; i++) {
 
-                const marker = new google.maps.Marker({
-                    position: uluru,
-                    map,
-                    title: "Colombo",
+                            marker[i] = new google.maps.Marker({
+                                position: { lat: data[i].latitude, lng: data[i].longitude },
+                                map: map,
+                                //title: data[i].Name,
+                            });
+
+                            contentString[i] =
+                                '<div id="content">' +
+                                '<div id="siteNotice">' +
+                                "</div>" +
+                                '<h1 id="firstHeading" class="firstHeading">' + data[i].address + '</h1>' +
+                                '<div id="bodyContent">' +
+                                "<p><b>Owned by " +data[i].name+"</b>,Test description</p>" +
+                                "</div>" +
+                                "</div>";
+
+                            infowindow[i] = new google.maps.InfoWindow({
+                                content: contentString[i],
+                            });
+
+                            var markerValue = marker[i];
+
+                            google.maps.event.addListener(marker[i], 'mouseover', (function (markerValue, i) {
+
+                                return function () {
+                                    infowindow[i].open(map, marker[i]);
+                                }
+                            })(marker[i], i));
+
+                            google.maps.event.addListener(marker[i], 'mouseout', (function (markerValue, i) {
+
+                                return function () {
+                                    infowindow[i].close();
+                                }
+                            })(marker[i], i));
+                            //marker.addListener("click", () => {
+                            //    infowindow.open(map, marker);
+                            //});
+
+
+                        }
+
+                    },
+                    error: function() {
+                        ErrorMessage("", '');
+                    }
                 });
-                const contentString =
-                    '<div id="content">' +
-                    '<div id="siteNotice">' +
-                    "</div>" +
-                    '<h1 id="firstHeading" class="firstHeading">Colombo</h1>' +
-                    '<div id="bodyContent">' +
-                    "<p><b>Colombo</b>,Test description</p>" +
-                    "</div>" +
-                    "</div>";
-                const infowindow = new google.maps.InfoWindow({
-                    content: contentString,
-                });
-              
-                marker.addListener("click", () => {
-                    infowindow.open(map, marker);
-                });
+            }
+          //  $.ajax("@Url.Action("GetAllLocation", "Registration")", function (data) {
+
+                //var marker = [];
+                //var infowindow = [];
+                //var contentString = [];
+
+                //for (var i = 0; i < data.length; i++) {
+
+                //    marker[i] = new google.maps.Marker({
+                //        position: { lat: data[i].Latitude, lng: data[i].Longitude },
+                //        map:map,
+                //        //title: data[i].Name,
+                //    });
+
+                //    contentString[i] =
+                //        '<div id="content">' +
+                //        '<div id="siteNotice">' +
+                //        "</div>" +
+                //        '<h1 id="firstHeading" class="firstHeading">' + data[i].Address + '</h1>' +
+                //        '<div id="bodyContent">' +
+                //        "<p><b>Colombo</b>,Test description</p>" +
+                //        "</div>" +
+                //        "</div>";
+
+                //    infowindow[i] = new google.maps.InfoWindow({
+                //        content: contentString[i],
+                //    });
+
+                //    var markerValue = marker[i];
+
+                //    google.maps.event.addListener(marker[i], 'mouseover', (function (markerValue, i) {
+
+                //        return function () {
+                //            infowindow[i].open(map, marker[i]);
+                //        }
+                //    })(marker[i], i));
+
+                //    google.maps.event.addListener(marker[i], 'mouseout', (function (markerValue, i) {
+
+                //        return function () {
+                //            infowindow[i].close();
+                //        }
+                //    })(marker[i], i));
+                //    //marker.addListener("click", () => {
+                //    //    infowindow.open(map, marker);
+                //    //});
+
+
+                //}
+
                 //marker.addListener("click", () => {
                 //    infowindow.open(map, marker);
                 //});
         //});
 
-            
-        }
-    </script>
+
+      //  }
+</script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVamh7-n7dttovSZq4X2asx-IHA64oyX0&callback=initMap"
             async defer></script>
